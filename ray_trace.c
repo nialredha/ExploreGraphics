@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "vec3.h"
+#include "ray.h"
 
 int main()
 {
@@ -43,8 +44,12 @@ int main()
 			int ir = (int) 255.99*v1.e[0];
 			int ig = (int) 255.99*v1.e[1];
 			int ib = (int) 255.99*v1.e[2];
-			
+
 			fprintf(fp, "%d %d %d\n", ir, ig, ib);
+
+			vec3 dir = bottom_left + u*horizontal + v*vertical;
+			set_ray(&origin, &dir);
+			
 		}
 	}
 

@@ -3,12 +3,15 @@
 
 #include "vec3.h"
 
+vec3 orig;
+vec3 dir;
+
 // function setters
 void set_ray(vec3 *a, vec3 *b);
 
 // function getters 
-vec3 orig	origin();
-vec3 dir	direction();
-vec3 point  point_at_parameter(float p); 
+vec3 origin();
+vec3 direction();
+vec3 point_at_parameter(float p); 
 
 #endif // RAY_H_
