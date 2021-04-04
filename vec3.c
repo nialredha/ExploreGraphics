@@ -16,11 +16,11 @@ void set_vec3_length(vec3 *v)
 	v->length = sqrt(x*x + y*y + z*z);
 }
 
-void scalar_multiply(float s, vec3 *v)
+void scalar_multiply(float s, vec3 *v, vec3 *rv)
 {
-	v->e[0] = v->e[0] * s;	
-	v->e[1] = v->e[1] * s;	
-	v->e[2] = v->e[2] * s;	
+	rv->e[0] = v->e[0] * s;	
+	rv->e[1] = v->e[1] * s;	
+	rv->e[2] = v->e[2] * s;	
 }
 
 void scalar_divide(float s, vec3 *v)
