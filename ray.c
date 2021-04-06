@@ -17,11 +17,9 @@ vec3 direction()
 	return dir;
 }
 
-/*
 vec3 point_at_parameter(float p)
 {
 	return orig + p*dir;
 }
-*/
 
 

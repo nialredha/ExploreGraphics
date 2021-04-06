@@ -37,7 +37,6 @@ int main()
 			float u = (float) j / (float) nx;
 			float v = (float) i / (float) ny;
 
-			// have to reset horizontal value if I am going to change it
 			s_mult(u, &horizontal, &s_horiz);
 			s_mult(v, &vertical, &s_vert);
 
@@ -62,17 +61,21 @@ int main()
 vec3 color(vec3 *orig, vec3 *dir)
 {
 	vec3 center; set_vec3(0, 0, -1, &center); set_length(&center);
-	vec3 red; set_vec3(1, 0, 0, &red); set_length(&red);
+	//vec3 red; set_vec3(1, 0, 0, &red); set_length(&red);
 
 	float t = hit_sphere(&center, 0.5, orig, dir);
 	if (t > 0.0)
 	{
 		vec3 point; point_at_param(&point, orig, dir, t);
-		return red;
+		vec3 ray; diff(&ray, &point, &center); set_length(&ray);
+		vec3 uray; normalize(&ray, &uray);	
+		vec3 temp; set_vec3(uray.e[0]+1, uray.e[1]+1, uray.e[2]+1, &temp);
+		vec3 color; s_mult(0.5, &temp, &color);
+		return color;
 	}
 
 	vec3 unit_direction;
-	vec3 ray_direction = *dir;
+	vec3 ray_direction = *dir; 
 	normalize(&ray_direction, &unit_direction);
 
 	vec3 v2; set_vec3(1.0, 1.0, 1.0, &v2); set_length(&v2);
@@ -80,7 +83,7 @@ vec3 color(vec3 *orig, vec3 *dir)
 	vec3 s_v2;
 	vec3 s_v3;
 	
-	float t = 0.5*(unit_direction.e[1] + 1.0);
+	t = 0.5*(unit_direction.e[1] + 1.0);
 	float it = 1.0 - t;	
 
 	s_mult(it, &v2, &s_v2);
@@ -101,14 +104,14 @@ float hit_sphere(vec3 *center, float radius, vec3 *orig, vec3 *dir)
 	float a = dot(dir, dir);
 	float b = 2.0 * dot(&oc, dir);
 	float c = dot(&oc, &oc) - radius*radius;
-	float discrim = b*b - 4*a*c;
+	float discrim = b*b - 4.0*a*c;
 
-	if (discrim < 0)
+	if (discrim < 0.0)
 	{
 		return -1.0;
 	} 
 	else 
 	{
-		return (-b - sqrt(discrim)) / 2*a;
+		return (-b - sqrt(discrim)) / 2.0*a;
 	}
 }
