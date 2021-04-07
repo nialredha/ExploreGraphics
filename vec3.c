@@ -63,3 +63,17 @@ void point_at_param(vec3 *result, vec3 *a, vec3 *b, float p)
 	sum(result, a, &s_b);
 }
 
+void plus_eq(vec3 *v, vec3 *val)
+{
+	v->e[0] = v->e[0] + val->e[0];
+	v->e[1] = v->e[1] + val->e[1];
+	v->e[2] = v->e[2] + val->e[2];
+}
+
+void s_div_eq(vec3 *v, float val)
+{
+	v->e[0] = v->e[0] / val;
+	v->e[1] = v->e[1] / val;
+	v->e[2] = v->e[2] / val;
+}
+

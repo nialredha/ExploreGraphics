@@ -16,6 +16,8 @@ void sum(vec3 *result, vec3 *a, vec3 *b);
 void diff(vec3 *result, vec3 *a, vec3 *b);
 float dot(vec3 *a, vec3 *b);
 void normalize(vec3 *v, vec3 *uv);
+void plus_eq(vec3 *v, vec3 *val);
+void s_div_eq(vec3 *v, float val);
 
 void point_at_param(vec3 *result, vec3 *a, vec3 *b, float p);
 

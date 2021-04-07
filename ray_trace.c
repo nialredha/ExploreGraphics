@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "vec3.h"
 
-vec3 color(vec3 *orig, vec3 *dir);
+vec3 color(vec3 *orig, vec3 *dir, vec3 *center, float radius, int flag);
 float hit_sphere(vec3 *center, float radius, vec3 *orig, vec3 *dir); 
 
 int main()
@@ -13,6 +14,7 @@ int main()
 
 	int nx = 200;
 	int ny = 100;
+	int ns = 100;
 
 	vec3 bottom_left; set_vec3(-2.0, -1.0, -1.0, &bottom_left);
 					  set_length(&bottom_left);
@@ -24,7 +26,7 @@ int main()
 					  set_length(&vertical);
 	vec3 s_horiz;
 	vec3 s_vert;
-	
+
 	float r, g, b;
 	int ir, ig, ib;
 
@@ -34,22 +36,57 @@ int main()
 	{
 		for (int j = 0; j < nx; ++j)
 		{
-			float u = (float) j / (float) nx;
-			float v = (float) i / (float) ny;
+			vec3 col; set_vec3(0, 0, 0, &col);
+			vec3 col2; set_vec3(0, 0, 0, &col2);
 
-			s_mult(u, &horizontal, &s_horiz);
-			s_mult(v, &vertical, &s_vert);
+			for (int s=0; s<ns; ++s)
+			{
+				
+				float u = ((float) (j + (rand()/((double) RAND_MAX)))) / (float) nx;
+				float v = ((float) (i + (rand()/((double) RAND_MAX)))) / (float) ny;
 
-			vec3 dir;
-			sum(&dir, &bottom_left, &s_horiz);
-			sum(&dir, &dir, &s_vert);
-			set_length(&dir);
+				s_mult(u, &horizontal, &s_horiz);
+				s_mult(v, &vertical, &s_vert);
 
-			vec3 col = color(&origin, &dir);
+				vec3 dir;
+				sum(&dir, &bottom_left, &s_horiz);
+				sum(&dir, &dir, &s_vert);
+				diff(&dir, &dir, &origin);
+				set_length(&dir);
 
-			int ir = (int) 255.99*col.e[0];
-			int ig = (int) 255.99*col.e[1];
-			int ib = (int) 255.99*col.e[2];
+				vec3 center1; set_vec3(0, -100.5, -1, &center1); set_length(&center1);
+				vec3 center2; set_vec3(0, 0, -1, &center2); set_length(&center2);
+				vec3 val;
+			
+				val = color(&origin, &dir, &center1, 100, 1);
+				plus_eq(&col, &val);
+				val = color(&origin, &dir, &center2, 0.5, 0);
+				plus_eq(&col2, &val);
+			}
+
+			s_div_eq(&col, (float) ns);
+			s_div_eq(&col2, (float) ns);
+
+			int ir, ig, ib;
+
+			/*
+			ir = (int) 255.99*col2.e[0]; 
+			ig = (int) 255.99*col2.e[1];
+			ib = (int) 255.99*col2.e[2];
+			*/
+
+			if (col2.length < 0.0)
+			{
+				ir = (int) 255.99*col.e[0]; 
+				ig = (int) 255.99*col.e[1];
+				ib = (int) 255.99*col.e[2];
+			}
+			else 
+			{
+				ir = (int) 255.99*col2.e[0]; 
+				ig = (int) 255.99*col2.e[1];
+				ib = (int) 255.99*col2.e[2];
+			}
 
 			fprintf(fp, "%d %d %d\n", ir, ig, ib);
 		}
@@ -58,20 +95,26 @@ int main()
 	fclose(fp);
 }
 
-vec3 color(vec3 *orig, vec3 *dir)
+vec3 color(vec3 *orig, vec3 *dir, vec3 *center, float radius, int flag)
 {
-	vec3 center; set_vec3(0, 0, -1, &center); set_length(&center);
 	//vec3 red; set_vec3(1, 0, 0, &red); set_length(&red);
 
-	float t = hit_sphere(&center, 0.5, orig, dir);
+	float t = hit_sphere(center, radius, orig, dir);
+
 	if (t > 0.0)
 	{
 		vec3 point; point_at_param(&point, orig, dir, t);
-		vec3 ray; diff(&ray, &point, &center); set_length(&ray);
+		vec3 ray; diff(&ray, &point, center); set_length(&ray);
 		vec3 uray; normalize(&ray, &uray);	
 		vec3 temp; set_vec3(uray.e[0]+1, uray.e[1]+1, uray.e[2]+1, &temp);
-		vec3 color; s_mult(0.5, &temp, &color);
+		vec3 color; s_mult(0.5, &temp, &color); set_length(&color);
 		return color;
+	}
+	
+	if (flag == 0)
+	{
+		vec3 fake; fake.length = -1.0;
+		return fake;
 	}
 
 	vec3 unit_direction;
