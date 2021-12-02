@@ -3,8 +3,7 @@ Windows application that displays a distorted, rotating sphere made using a sign
 
 ## Overview
 I was curious about graphics and the math involved, so I started a shadertoy account (https://www.shadertoy.com/user/nialred)
-and played around with signed distance functions. After making a cool shader, I wanted to find out how well it  
-could run on one CPU core...
+and played around with signed distance functions. After making a shader I liked, I wanted to find out how well it could run on one CPU core...
 
 I also wrote some code to generate a sphere normal map in a .ppm file, which was part of a tutorial. I learned a lot from it, but the results 
 aren't nearly as interesting as porting shadertoy code to C (in my opinion).
